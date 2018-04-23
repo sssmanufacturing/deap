@@ -26,7 +26,8 @@ you really want them to do.
 """
 
 import random
-
+import time
+import datetime
 import tools
 
 
@@ -83,7 +84,7 @@ def varAnd(population, toolbox, cxpb, mutpb):
 
 
 def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
-             halloffame=None, verbose=__debug__):
+             halloffame=None, verbose=__debug__, timespan_timedelta=None, smart_stop=False):
     """This algorithm reproduce the simplest evolutionary algorithm as
     presented in chapter 7 of [Back2000]_.
 
@@ -97,11 +98,14 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
                   inplace, optional.
     :param halloffame: A :class:`~deap.tools.HallOfFame` object that will
                        contain the best individuals, optional.
+
     :param verbose: Whether or not to log the statistics.
+    :param timespan_timedelta: Maximum time to run algorithm. 
+    :param smart_stop: If True, runs algorithm untill all timespan is elapsed ignoring ngen.
+                        otherwise, algorithm stops when reaches to ngn or all timespan is elapsed
     :returns: The final population
     :returns: A class:`~deap.tools.Logbook` with the statistics of the
               evolution
-
     The algorithm takes in a population and evolves it in place using the
     :meth:`varAnd` method. It returns the optimized population and a
     :class:`~deap.tools.Logbook` with the statistics of the evolution. The
@@ -160,7 +164,10 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
         print logbook.stream
 
     # Begin the generational process
-    for gen in range(1, ngen + 1):
+    total_generations = ngen + 1
+    gen = 0
+    start_time = time.time()
+    while gen < total_generations or smart_stop:
         # Select the next generation individuals
         offspring = toolbox.select(population, len(population))
 
@@ -185,6 +192,14 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
         logbook.record(gen=gen, nevals=len(invalid_ind), **record)
         if verbose:
             print logbook.stream
+        gen += 1
+        elapsed_time = time.time() - start_time
+
+        if not timespan_timedelta is None:
+            elapsed_timedelta = datetime.timedelta(seconds=elapsed_time)
+            remaining_time = timespan_timedelta - elapsed_timedelta
+            if remaining_time.seconds <= 0:
+                break
 
     return population, logbook
 
