@@ -190,16 +190,20 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
         # Append the current generation statistics to the logbook
         record = stats.compile(population) if stats else {}
         logbook.record(gen=gen, nevals=len(invalid_ind), **record)
-        if verbose:
-            print logbook.stream
-        gen += 1
-        elapsed_time = time.time() - start_time
 
+        gen += 1
         if not timespan_timedelta is None:
+            elapsed_time = time.time() - start_time
             elapsed_timedelta = datetime.timedelta(seconds=elapsed_time)
             remaining_time = timespan_timedelta - elapsed_timedelta
-            if remaining_time.seconds <= 0:
+            if verbose:
+                print '%s\t remaing time: %s' % (
+                    logbook.stream, str(remaining_time))
+            if (remaining_time.seconds <= 0) or (remaining_time.days <= 0)):
                 break
+        else:
+            if verbose:
+                print logbook.stream
 
     return population, logbook
 
