@@ -199,7 +199,8 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
             if verbose:
                 print '%s\t remaing time: %s' % (
                     logbook.stream, str(remaining_time))
-            if (remaining_time.seconds <= 0) or (remaining_time.days <= 0):
+            if (remaining_time.seconds <= 0) or (remaining_time.days < 0):
+                print "Exceeded time span."
                 break
         else:
             if verbose:
