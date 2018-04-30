@@ -100,7 +100,7 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
                        contain the best individuals, optional.
 
     :param verbose: Whether or not to log the statistics.
-    :param timespan_timedelta: Maximum time to run algorithm. 
+    :param timespan_timedelta: Maximum time to run algorithm.
     :param smart_stop: If True, runs algorithm untill all timespan is elapsed ignoring ngen.
                         otherwise, algorithm stops when reaches to ngn or all timespan is elapsed
     :returns: The final population
@@ -268,7 +268,8 @@ def varOr(population, toolbox, lambda_, cxpb, mutpb):
 
 
 def eaMuPlusLambda(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
-                   stats=None, halloffame=None, verbose=__debug__):
+                   stats=None, halloffame=None, verbose=__debug__,
+                   timespan_timedelta=None, smart_stop=False):
     """This is the :math:`(\mu + \lambda)` evolutionary algorithm.
 
     :param population: A list of individuals.
@@ -333,7 +334,11 @@ def eaMuPlusLambda(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
         print logbook.stream
 
     # Begin the generational process
-    for gen in range(1, ngen + 1):
+    total_generations = ngen + 1
+    gen = 0
+    start_time = time.time()
+    while gen < total_generations or smart_stop:
+        # for gen in range(1, ngen + 1):
         # Vary the population
         offspring = varOr(population, toolbox, lambda_, cxpb, mutpb)
 
@@ -353,14 +358,28 @@ def eaMuPlusLambda(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
         # Update the statistics with the new population
         record = stats.compile(population) if stats is not None else {}
         logbook.record(gen=gen, nevals=len(invalid_ind), **record)
-        if verbose:
-            print logbook.stream
+        gen += 1
+
+        if not timespan_timedelta is None:
+            elapsed_time = time.time() - start_time
+            elapsed_timedelta = datetime.timedelta(seconds=elapsed_time)
+            remaining_time = timespan_timedelta - elapsed_timedelta
+            if verbose:
+                print '%s\t remaing time: %s' % (
+                    logbook.stream, str(remaining_time))
+            if (remaining_time.seconds <= 0) or (remaining_time.days < 0):
+                print "Exceeded time span."
+                break
+        else:
+            if verbose:
+                print logbook.stream
 
     return population, logbook
 
 
 def eaMuCommaLambda(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
-                    stats=None, halloffame=None, verbose=__debug__):
+                    stats=None, halloffame=None, verbose=__debug__,
+                    timespan_timedelta=None, smart_stop=False):
     """This is the :math:`(\mu~,~\lambda)` evolutionary algorithm.
 
     :param population: A list of individuals.
@@ -434,7 +453,10 @@ def eaMuCommaLambda(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
         print logbook.stream
 
     # Begin the generational process
-    for gen in range(1, ngen + 1):
+    total_generations = ngen + 1
+    gen = 0
+    start_time = time.time()
+    while gen < total_generations or smart_stop:
         # Vary the population
         offspring = varOr(population, toolbox, lambda_, cxpb, mutpb)
 
@@ -454,8 +476,20 @@ def eaMuCommaLambda(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
         # Update the statistics with the new population
         record = stats.compile(population) if stats is not None else {}
         logbook.record(gen=gen, nevals=len(invalid_ind), **record)
-        if verbose:
-            print logbook.stream
+        gen += 1
+        if not timespan_timedelta is None:
+            elapsed_time = time.time() - start_time
+            elapsed_timedelta = datetime.timedelta(seconds=elapsed_time)
+            remaining_time = timespan_timedelta - elapsed_timedelta
+            if verbose:
+                print '%s\t remaing time: %s' % (
+                    logbook.stream, str(remaining_time))
+            if (remaining_time.seconds <= 0) or (remaining_time.days < 0):
+                print "Exceeded time span."
+                break
+        else:
+            if verbose:
+                print logbook.stream
     return population, logbook
 
 
