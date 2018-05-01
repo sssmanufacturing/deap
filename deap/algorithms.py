@@ -31,6 +31,19 @@ import datetime
 import tools
 
 
+def varAndStandard(population, toolbox, cxpb, mutpb):
+    offspring = []
+    for i in range(len(population)):
+        selection = toolbox.select(population, 2)
+        selection[0], selection[1] = toolbox.mate(selection[0], selection[1])
+        #del selection[0].fitness.values, selection[1].fitness.values
+        selection[0], = toolbox.mutate(selection[0])
+        #del selection[0].fitness.values
+        offspring.append(toolbox.clone(selection[0]))
+        del offspring[-1].fitness.values
+    return offspring
+
+
 def varAnd(population, toolbox, cxpb, mutpb):
     """Part of an evolutionary algorithm applying only the variation part
     (crossover **and** mutation). The modified individuals have their
@@ -169,10 +182,10 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
     start_time = time.time()
     while gen < total_generations or smart_stop:
         # Select the next generation individuals
-        offspring = toolbox.select(population, len(population))
+        #offspring = toolbox.select(population, len(population))
 
         # Vary the pool of individuals
-        offspring = varAnd(offspring, toolbox, cxpb, mutpb)
+        offspring = varAndStandard(population, toolbox, cxpb, mutpb)
 
         # Evaluate the individuals with an invalid fitness
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
