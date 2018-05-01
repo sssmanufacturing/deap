@@ -182,10 +182,10 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
     start_time = time.time()
     while gen < total_generations or smart_stop:
         # Select the next generation individuals
-        #offspring = toolbox.select(population, len(population))
+        offspring = toolbox.select(population, len(population))
 
         # Vary the pool of individuals
-        offspring = varAndStandard(population, toolbox, cxpb, mutpb)
+        offspring = varAnd(offspring, toolbox, cxpb, mutpb)
 
         # Evaluate the individuals with an invalid fitness
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
