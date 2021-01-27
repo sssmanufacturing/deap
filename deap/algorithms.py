@@ -72,9 +72,9 @@ def varAnd(population, toolbox, cxpb, mutpb):
     mutated version in :math:`P_\mathrm{o}`. The resulting :math:`P_\mathrm{o}`
     is returned.
 
-    This variation is named *And* beceause of its propention to apply both
+    This variation is named *And* because of its propensity to apply both
     crossover and mutation on the individuals. Note that both operators are
-    not applied systematicaly, the resulting individuals can be generated from
+    not applied systematically, the resulting individuals can be generated from
     crossover only, mutation only, crossover and mutation, and reproduction
     according to the given probabilities. Both probabilities should be in
     :math:`[0, 1]`.
@@ -97,7 +97,7 @@ def varAnd(population, toolbox, cxpb, mutpb):
 
 
 def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
-             halloffame=None, verbose=__debug__, timespan_timedelta=None, smart_stop=False):
+             halloffame=None, verbose=__debug__):
     """This algorithm reproduce the simplest evolutionary algorithm as
     presented in chapter 7 of [Back2000]_.
 
@@ -119,10 +119,11 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
     :returns: The final population
     :returns: A class:`~deap.tools.Logbook` with the statistics of the
               evolution
+
     The algorithm takes in a population and evolves it in place using the
     :meth:`varAnd` method. It returns the optimized population and a
     :class:`~deap.tools.Logbook` with the statistics of the evolution. The
-    logbook will contain the generation number, the number of evalutions for
+    logbook will contain the generation number, the number of evaluations for
     each generation and the statistics if a :class:`~deap.tools.Statistics` is
     given as argument. The *cxpb* and *mutpb* arguments are passed to the
     :func:`varAnd` function. The pseudocode goes as follow ::
@@ -252,7 +253,7 @@ def varOr(population, toolbox, lambda_, cxpb, mutpb):
     selected at random from :math:`P_\mathrm{p}`, cloned and appended to
     :math:`P_\mathrm{o}`.
 
-    This variation is named *Or* beceause an offspring will never result from
+    This variation is named *Or* because an offspring will never result from
     both operations crossover and mutation. The sum of both probabilities
     shall be in :math:`[0, 1]`, the reproduction probability is
     1 - *cxpb* - *mutpb*.
@@ -305,7 +306,7 @@ def eaMuPlusLambda(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
     The algorithm takes in a population and evolves it in place using the
     :func:`varOr` function. It returns the optimized population and a
     :class:`~deap.tools.Logbook` with the statistics of the evolution. The
-    logbook will contain the generation number, the number of evalutions for
+    logbook will contain the generation number, the number of evaluations for
     each generation and the statistics if a :class:`~deap.tools.Statistics` is
     given as argument. The *cxpb* and *mutpb* arguments are passed to the
     :func:`varOr` function. The pseudocode goes as follow ::
@@ -415,7 +416,7 @@ def eaMuCommaLambda(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
     The algorithm takes in a population and evolves it in place using the
     :func:`varOr` function. It returns the optimized population and a
     :class:`~deap.tools.Logbook` with the statistics of the evolution. The
-    logbook will contain the generation number, the number of evalutions for
+    logbook will contain the generation number, the number of evaluations for
     each generation and the statistics if a :class:`~deap.tools.Statistics` is
     given as argument. The *cxpb* and *mutpb* arguments are passed to the
     :func:`varOr` function. The pseudocode goes as follow ::
@@ -527,7 +528,7 @@ def eaGenerateUpdate(toolbox, ngen, halloffame=None, stats=None,
     function and updates the generation method with the :func:`toolbox.update`
     function. It returns the optimized population and a
     :class:`~deap.tools.Logbook` with the statistics of the evolution. The
-    logbook will contain the generation number, the number of evalutions for
+    logbook will contain the generation number, the number of evaluations for
     each generation and the statistics if a :class:`~deap.tools.Statistics` is
     given as argument. The pseudocode goes as follow ::
 
@@ -536,6 +537,10 @@ def eaGenerateUpdate(toolbox, ngen, halloffame=None, stats=None,
             evaluate(population)
             toolbox.update(population)
 
+
+    This function expects :meth:`toolbox.generate` and :meth:`toolbox.evaluate` aliases to be
+    registered in the toolbox.
+    
     .. [Colette2010] Collette, Y., N. Hansen, G. Pujol, D. Salazar Aponte and
        R. Le Riche (2010). On Object-Oriented Programming of Optimizers -
        Examples in Scilab. In P. Breitkopf and R. F. Coelho, eds.:
